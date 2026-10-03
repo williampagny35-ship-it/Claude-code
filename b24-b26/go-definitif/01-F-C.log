@@ -1,0 +1,68 @@
+# PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit | run 2026-10-03T14:29:52.981022
+
+## S1 : transaction explicite, 2 lectures séparées de 1,0 s (sommeil client), 30 répétitions
+  rep  1: lecture1 now=14:29:53.009468 stmt=14:29:53.009720 clock=14:29:53.010028 | lecture2 now=14:29:53.009468 stmt=14:29:54.011213 clock=14:29:54.011401 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep  2: lecture1 now=14:29:54.023932 stmt=14:29:54.024209 clock=14:29:54.024537 | lecture2 now=14:29:54.023932 stmt=14:29:55.025488 clock=14:29:55.025641 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep  3: lecture1 now=14:29:55.043374 stmt=14:29:55.043691 clock=14:29:55.044204 | lecture2 now=14:29:55.043374 stmt=14:29:56.045316 clock=14:29:56.045492 | Δnow=0.000000s Δstmt=1.002s Δclock=1.001s
+  rep  4: lecture1 now=14:29:56.056982 stmt=14:29:56.057383 clock=14:29:56.057778 | lecture2 now=14:29:56.056982 stmt=14:29:57.058937 clock=14:29:57.059091 | Δnow=0.000000s Δstmt=1.002s Δclock=1.001s
+  rep  5: lecture1 now=14:29:57.071338 stmt=14:29:57.071578 clock=14:29:57.071872 | lecture2 now=14:29:57.071338 stmt=14:29:58.072757 clock=14:29:58.072957 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep  6: lecture1 now=14:29:58.085809 stmt=14:29:58.086233 clock=14:29:58.086675 | lecture2 now=14:29:58.085809 stmt=14:29:59.087661 clock=14:29:59.087838 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep  7: lecture1 now=14:29:59.102922 stmt=14:29:59.103242 clock=14:29:59.103590 | lecture2 now=14:29:59.102922 stmt=14:30:00.104594 clock=14:30:00.104743 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep  8: lecture1 now=14:30:00.116161 stmt=14:30:00.116627 clock=14:30:00.116995 | lecture2 now=14:30:00.116161 stmt=14:30:01.117968 clock=14:30:01.118221 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep  9: lecture1 now=14:30:01.131190 stmt=14:30:01.131412 clock=14:30:01.131739 | lecture2 now=14:30:01.131190 stmt=14:30:02.132851 clock=14:30:02.133005 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 10: lecture1 now=14:30:02.144447 stmt=14:30:02.144816 clock=14:30:02.145196 | lecture2 now=14:30:02.144447 stmt=14:30:03.146095 clock=14:30:03.146214 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 11: lecture1 now=14:30:03.157629 stmt=14:30:03.157988 clock=14:30:03.158328 | lecture2 now=14:30:03.157629 stmt=14:30:04.159239 clock=14:30:04.159412 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 12: lecture1 now=14:30:04.171236 stmt=14:30:04.171651 clock=14:30:04.171989 | lecture2 now=14:30:04.171236 stmt=14:30:05.172936 clock=14:30:05.173075 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 13: lecture1 now=14:30:05.184275 stmt=14:30:05.184811 clock=14:30:05.185100 | lecture2 now=14:30:05.184275 stmt=14:30:06.185933 clock=14:30:06.186077 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 14: lecture1 now=14:30:06.197397 stmt=14:30:06.197739 clock=14:30:06.198038 | lecture2 now=14:30:06.197397 stmt=14:30:07.198934 clock=14:30:07.199093 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 15: lecture1 now=14:30:07.212495 stmt=14:30:07.212812 clock=14:30:07.213192 | lecture2 now=14:30:07.212495 stmt=14:30:08.214198 clock=14:30:08.214324 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 16: lecture1 now=14:30:08.226782 stmt=14:30:08.227059 clock=14:30:08.227452 | lecture2 now=14:30:08.226782 stmt=14:30:09.228371 clock=14:30:09.228558 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 17: lecture1 now=14:30:09.243654 stmt=14:30:09.243938 clock=14:30:09.244272 | lecture2 now=14:30:09.243654 stmt=14:30:10.245704 clock=14:30:10.245867 | Δnow=0.000000s Δstmt=1.002s Δclock=1.002s
+  rep 18: lecture1 now=14:30:10.258522 stmt=14:30:10.258798 clock=14:30:10.259136 | lecture2 now=14:30:10.258522 stmt=14:30:11.260770 clock=14:30:11.260956 | Δnow=0.000000s Δstmt=1.002s Δclock=1.002s
+  rep 19: lecture1 now=14:30:11.273577 stmt=14:30:11.273952 clock=14:30:11.274359 | lecture2 now=14:30:11.273577 stmt=14:30:12.275386 clock=14:30:12.275619 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 20: lecture1 now=14:30:12.290153 stmt=14:30:12.290471 clock=14:30:12.290805 | lecture2 now=14:30:12.290153 stmt=14:30:13.291694 clock=14:30:13.291836 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 21: lecture1 now=14:30:13.303131 stmt=14:30:13.303463 clock=14:30:13.303800 | lecture2 now=14:30:13.303131 stmt=14:30:14.304817 clock=14:30:14.304960 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 22: lecture1 now=14:30:14.320602 stmt=14:30:14.322530 clock=14:30:14.322870 | lecture2 now=14:30:14.320602 stmt=14:30:15.323963 clock=14:30:15.324110 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 23: lecture1 now=14:30:15.335777 stmt=14:30:15.336082 clock=14:30:15.336378 | lecture2 now=14:30:15.335777 stmt=14:30:16.337529 clock=14:30:16.337679 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 24: lecture1 now=14:30:16.350570 stmt=14:30:16.350996 clock=14:30:16.351398 | lecture2 now=14:30:16.350570 stmt=14:30:17.352549 clock=14:30:17.352719 | Δnow=0.000000s Δstmt=1.002s Δclock=1.001s
+  rep 25: lecture1 now=14:30:17.366892 stmt=14:30:17.367258 clock=14:30:17.367677 | lecture2 now=14:30:17.366892 stmt=14:30:18.368819 clock=14:30:18.368971 | Δnow=0.000000s Δstmt=1.002s Δclock=1.001s
+  rep 26: lecture1 now=14:30:18.383154 stmt=14:30:18.383512 clock=14:30:18.383956 | lecture2 now=14:30:18.383154 stmt=14:30:19.384824 clock=14:30:19.384963 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 27: lecture1 now=14:30:19.399067 stmt=14:30:19.399638 clock=14:30:19.400006 | lecture2 now=14:30:19.399067 stmt=14:30:20.401023 clock=14:30:20.401187 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 28: lecture1 now=14:30:20.413112 stmt=14:30:20.413368 clock=14:30:20.413667 | lecture2 now=14:30:20.413112 stmt=14:30:21.414606 clock=14:30:21.414752 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  rep 29: lecture1 now=14:30:21.427134 stmt=14:30:21.427637 clock=14:30:21.428074 | lecture2 now=14:30:21.427134 stmt=14:30:22.429309 clock=14:30:22.429498 | Δnow=0.000000s Δstmt=1.002s Δclock=1.001s
+  rep 30: lecture1 now=14:30:22.440819 stmt=14:30:22.441090 clock=14:30:22.441555 | lecture2 now=14:30:22.440819 stmt=14:30:23.442464 clock=14:30:23.442624 | Δnow=0.000000s Δstmt=1.001s Δclock=1.001s
+  compteurs d'écart: {"now<>current_timestamp": 0, "now<>transaction_timestamp": 0, "now_changed_in_tx": 0, "statement_not_advanced": 0, "clock_not_advanced": 0}
+
+## S2 : instruction unique en autocommit, bloquée environ 1,0 s par une 2ᵉ session qui tient FOR UPDATE sur obs.lockrow, 30 répétitions
+   requête: with l as (select id from obs.lockrow where id=1 for update) select now(), current_timestamp, transaction_timestamp(), statement_timestamp(), clock_timestamp() from l
+  rep  1: attente=0.991s now=14:30:23.468271 current_ts=14:30:23.468271 stmt=14:30:23.468271 clock=14:30:24.458004 clock-now=0.990s
+  rep  2: attente=0.992s now=14:30:24.485805 current_ts=14:30:24.485805 stmt=14:30:24.485805 clock=14:30:25.476361 clock-now=0.991s
+  rep  3: attente=0.991s now=14:30:25.502408 current_ts=14:30:25.502408 stmt=14:30:25.502408 clock=14:30:26.491694 clock-now=0.989s
+  rep  4: attente=0.991s now=14:30:26.520690 current_ts=14:30:26.520690 stmt=14:30:26.520690 clock=14:30:27.508987 clock-now=0.988s
+  rep  5: attente=0.992s now=14:30:27.534617 current_ts=14:30:27.534617 stmt=14:30:27.534617 clock=14:30:28.524234 clock-now=0.990s
+  rep  6: attente=0.991s now=14:30:28.553054 current_ts=14:30:28.553054 stmt=14:30:28.553054 clock=14:30:29.542278 clock-now=0.989s
+  rep  7: attente=0.993s now=14:30:29.567106 current_ts=14:30:29.567106 stmt=14:30:29.567106 clock=14:30:30.557996 clock-now=0.991s
+  rep  8: attente=0.991s now=14:30:30.584772 current_ts=14:30:30.584772 stmt=14:30:30.584772 clock=14:30:31.573586 clock-now=0.989s
+  rep  9: attente=0.993s now=14:30:31.596344 current_ts=14:30:31.596344 stmt=14:30:31.596344 clock=14:30:32.587478 clock-now=0.991s
+  rep 10: attente=0.993s now=14:30:32.610710 current_ts=14:30:32.610710 stmt=14:30:32.610710 clock=14:30:33.601563 clock-now=0.991s
+  rep 11: attente=0.992s now=14:30:33.628478 current_ts=14:30:33.628478 stmt=14:30:33.628478 clock=14:30:34.617894 clock-now=0.989s
+  rep 12: attente=0.991s now=14:30:34.644166 current_ts=14:30:34.644166 stmt=14:30:34.644166 clock=14:30:35.633689 clock-now=0.990s
+  rep 13: attente=0.992s now=14:30:35.658215 current_ts=14:30:35.658215 stmt=14:30:35.658215 clock=14:30:36.648413 clock-now=0.990s
+  rep 14: attente=0.991s now=14:30:36.673311 current_ts=14:30:36.673311 stmt=14:30:36.673311 clock=14:30:37.662896 clock-now=0.990s
+  rep 15: attente=0.993s now=14:30:37.686630 current_ts=14:30:37.686630 stmt=14:30:37.686630 clock=14:30:38.678120 clock-now=0.991s
+  rep 16: attente=0.992s now=14:30:38.704740 current_ts=14:30:38.704740 stmt=14:30:38.704740 clock=14:30:39.695545 clock-now=0.991s
+  rep 17: attente=0.994s now=14:30:39.718520 current_ts=14:30:39.718520 stmt=14:30:39.718520 clock=14:30:40.709568 clock-now=0.991s
+  rep 18: attente=0.992s now=14:30:40.734733 current_ts=14:30:40.734733 stmt=14:30:40.734733 clock=14:30:41.725194 clock-now=0.990s
+  rep 19: attente=0.992s now=14:30:41.752928 current_ts=14:30:41.752928 stmt=14:30:41.752928 clock=14:30:42.743038 clock-now=0.990s
+  rep 20: attente=0.992s now=14:30:42.768170 current_ts=14:30:42.768170 stmt=14:30:42.768170 clock=14:30:43.758522 clock-now=0.990s
+  rep 21: attente=0.993s now=14:30:43.783761 current_ts=14:30:43.783761 stmt=14:30:43.783761 clock=14:30:44.774890 clock-now=0.991s
+  rep 22: attente=0.992s now=14:30:44.803472 current_ts=14:30:44.803472 stmt=14:30:44.803472 clock=14:30:45.792095 clock-now=0.989s
+  rep 23: attente=0.993s now=14:30:45.815892 current_ts=14:30:45.815892 stmt=14:30:45.815892 clock=14:30:46.807062 clock-now=0.991s
+  rep 24: attente=0.992s now=14:30:46.835194 current_ts=14:30:46.835194 stmt=14:30:46.835194 clock=14:30:47.825044 clock-now=0.990s
+  rep 25: attente=0.992s now=14:30:47.849262 current_ts=14:30:47.849262 stmt=14:30:47.849262 clock=14:30:48.839929 clock-now=0.991s
+  rep 26: attente=0.992s now=14:30:48.863633 current_ts=14:30:48.863633 stmt=14:30:48.863633 clock=14:30:49.854337 clock-now=0.991s
+  rep 27: attente=0.991s now=14:30:49.880025 current_ts=14:30:49.880025 stmt=14:30:49.880025 clock=14:30:50.869166 clock-now=0.989s
+  rep 28: attente=0.990s now=14:30:50.898928 current_ts=14:30:50.898928 stmt=14:30:50.898928 clock=14:30:51.886914 clock-now=0.988s
+  rep 29: attente=0.991s now=14:30:51.913956 current_ts=14:30:51.913956 stmt=14:30:51.913956 clock=14:30:52.902986 clock-now=0.989s
+  rep 30: attente=0.991s now=14:30:52.929761 current_ts=14:30:52.929761 stmt=14:30:52.929761 clock=14:30:53.919312 clock-now=0.990s
+  compteurs d'écart: {"now<>current_timestamp": 0, "now<>statement(diff>1ms)": 0, "clock-now<0.9s": 0}
