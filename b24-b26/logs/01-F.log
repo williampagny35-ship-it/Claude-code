@@ -1,0 +1,38 @@
+# 01-F — exécuté 2026-10-03T14:12:15.230781 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+
+## 01-F1 : transaction explicite ouverte AVANT l'expiration, contrôle APRÈS l'expiration réelle
+
+### horloge du contrôle = now
+début tx : now / statement / clock / expires_at: ["2026-10-03 14:12:15.298354+00:00", "2026-10-03 14:12:15.300221+00:00", "2026-10-03 14:12:15.300225+00:00", "2026-10-03 14:12:17.285290+00:00"]
+après 3 s : now / statement / clock: ["2026-10-03 14:12:15.298354+00:00", "2026-10-03 14:12:18.301618+00:00", "2026-10-03 14:12:18.301809+00:00"]
+résultat accept: "ACCEPTED"
+offre (status, expires_at, decided_at, décidée après expiration ?): ["accepted", "2026-10-03 14:12:17.285290+00:00", "2026-10-03 14:12:18.305070+00:00", true]
+
+### horloge du contrôle = statement
+début tx : now / statement / clock / expires_at: ["2026-10-03 14:12:18.388100+00:00", "2026-10-03 14:12:18.389738+00:00", "2026-10-03 14:12:18.389741+00:00", "2026-10-03 14:12:20.374485+00:00"]
+après 3 s : now / statement / clock: ["2026-10-03 14:12:18.388100+00:00", "2026-10-03 14:12:21.391014+00:00", "2026-10-03 14:12:21.391186+00:00"]
+résultat accept: "P0001 OFFER_EXPIRED"
+offre (status, expires_at, decided_at, décidée après expiration ?): ["pending", "2026-10-03 14:12:20.374485+00:00", null, null]
+
+### horloge du contrôle = clock
+début tx : now / statement / clock / expires_at: ["2026-10-03 14:12:21.471166+00:00", "2026-10-03 14:12:21.472849+00:00", "2026-10-03 14:12:21.472854+00:00", "2026-10-03 14:12:23.457372+00:00"]
+après 3 s : now / statement / clock: ["2026-10-03 14:12:21.471166+00:00", "2026-10-03 14:12:24.473878+00:00", "2026-10-03 14:12:24.474048+00:00"]
+résultat accept: "P0001 OFFER_EXPIRED"
+offre (status, expires_at, decided_at, décidée après expiration ?): ["pending", "2026-10-03 14:12:23.457372+00:00", null, null]
+
+## 01-F2 : appel unique en autocommit (type RPC), démarré AVANT l'expiration, bloqué 3 s sur le verrou de la course, contrôle APRÈS l'expiration
+
+### horloge du contrôle = now
+accept: {"result": "ACCEPTED", "sqlstate": null, "error": null, "elapsed_ms": 2891.6}
+offre (status, expires_at, decided_at, décidée après expiration ?): ["accepted", "2026-10-03 14:12:25.568327+00:00", "2026-10-03 14:12:27.586135+00:00", true]
+violations: []
+
+### horloge du contrôle = statement
+accept: {"result": "ACCEPTED", "sqlstate": null, "error": null, "elapsed_ms": 2892.7}
+offre (status, expires_at, decided_at, décidée après expiration ?): ["accepted", "2026-10-03 14:12:28.657983+00:00", "2026-10-03 14:12:30.674684+00:00", true]
+violations: []
+
+### horloge du contrôle = clock
+accept: {"result": null, "sqlstate": "P0001", "error": "OFFER_EXPIRED", "elapsed_ms": 2891.1}
+offre (status, expires_at, decided_at, décidée après expiration ?): ["pending", "2026-10-03 14:12:31.743250+00:00", null, null]
+violations: []

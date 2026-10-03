@@ -1,0 +1,118 @@
+# 01-G2 — exécuté 2026-10-03T14:13:22.508408 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+## Entrelacements forcés
+
+### FORCÉ disable=disable_flag contrôle=read isolation=read committed
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 2.9}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_flag contrôle=read isolation=repeatable read
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 3.2}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_flag contrôle=read isolation=serializable
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 3.6}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_flag contrôle=share isolation=read committed
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"], ["disable", "active", "Lock", "transactionid"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 1007.2}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_flag contrôle=share isolation=repeatable read
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"], ["disable", "active", "Lock", "transactionid"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 1006.7}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_flag contrôle=share isolation=serializable
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"], ["disable", "active", "Lock", "transactionid"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 1006.5}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_guard contrôle=read isolation=read committed
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 24.5}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_guard contrôle=read isolation=repeatable read
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 25.0}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_guard contrôle=read isolation=serializable
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"]]
+  acceptation: "40001 could not serialize access due to read/write dependencies among transactions"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 25.2}
+  final (eligible, ride.status): [false, "dispatching"]
+
+### FORCÉ disable=disable_guard contrôle=share isolation=read committed
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"], ["disable", "active", "Lock", "transactionid"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 1009.2}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_guard contrôle=share isolation=repeatable read
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"], ["disable", "active", "Lock", "transactionid"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": "DISABLED", "sqlstate": null, "error": null, "elapsed_ms": 1005.6}
+  final (eligible, ride.status): [false, "assigned"]
+
+### FORCÉ disable=disable_guard contrôle=share isolation=serializable
+  pg_stat_activity 1 s après lancement de la désactivation: [["accept", "idle in transaction", "Client", "ClientRead"], ["disable", "active", "Lock", "transactionid"]]
+  acceptation: "ACCEPTED"
+  désactivation: {"result": null, "sqlstate": "40001", "error": "could not serialize access due to read/write dependencies among transactions", "elapsed_ms": 1007.9}
+  final (eligible, ride.status): [true, "assigned"]
+
+## Campagnes à départ simultané (décalage aléatoire)
+
+### disable=disable_flag | contrôle acceptation=read | isolation=read committed | 150 itérations | décalage aléatoire 0..4 ms
+    69 x  accept=OK | disable=OK | commits disable<accept | final eligible=False ride=assigned  <== TEMPS_REEL: désactivation validée AVANT l'acceptation, acceptation quand même validée
+    57 x  accept=P0001:DRIVER_NOT_ELIGIBLE | disable=OK | final eligible=False ride=dispatching
+    24 x  accept=OK | disable=OK | commits accept<disable | final eligible=False ride=assigned
+  anomalies observées : 69/150
+
+### disable=disable_flag | contrôle acceptation=read | isolation=serializable | 150 itérations | décalage aléatoire 0..4 ms
+   123 x  accept=OK | disable=OK | commits disable<accept | final eligible=False ride=assigned  <== TEMPS_REEL: désactivation validée AVANT l'acceptation, acceptation quand même validée
+    24 x  accept=OK | disable=OK | commits accept<disable | final eligible=False ride=assigned
+     3 x  accept=P0001:DRIVER_NOT_ELIGIBLE | disable=OK | final eligible=False ride=dispatching
+  anomalies observées : 123/150
+
+### disable=disable_flag | contrôle acceptation=share | isolation=read committed | 150 itérations | décalage aléatoire 0..4 ms
+   110 x  accept=P0001:DRIVER_NOT_ELIGIBLE | disable=OK | final eligible=False ride=dispatching
+    40 x  accept=OK | disable=OK | commits accept<disable | final eligible=False ride=assigned
+  anomalies observées : 0/150
+
+### disable=disable_flag | contrôle acceptation=share | isolation=serializable | 150 itérations | décalage aléatoire 0..4 ms
+   104 x  accept=40001:could not serialize acce | disable=OK | final eligible=False ride=dispatching
+    42 x  accept=OK | disable=OK | commits accept<disable | final eligible=False ride=assigned
+     4 x  accept=P0001:DRIVER_NOT_ELIGIBLE | disable=OK | final eligible=False ride=dispatching
+  anomalies observées : 0/150
+
+### disable=disable_guard | contrôle acceptation=read | isolation=read committed | 150 itérations | décalage aléatoire 0..4 ms
+   148 x  accept=OK | disable=OK | commits accept<disable | final eligible=False ride=assigned  <== WRITE_SKEW: chauffeur inéligible ET course affectée, les deux opérations validées
+     2 x  accept=OK | disable=P0001:DRIVER_HAS_ACTIVE_RIDE | final eligible=True ride=assigned
+  anomalies observées : 148/150
+
+### disable=disable_guard | contrôle acceptation=read | isolation=serializable | 150 itérations | décalage aléatoire 0..4 ms
+   150 x  accept=OK | disable=40001:could not serialize acce | final eligible=True ride=assigned
+  anomalies observées : 0/150
+
+### disable=disable_guard | contrôle acceptation=share | isolation=read committed | 150 itérations | décalage aléatoire 0..4 ms
+   147 x  accept=OK | disable=OK | commits accept<disable | final eligible=False ride=assigned  <== WRITE_SKEW: chauffeur inéligible ET course affectée, les deux opérations validées
+     3 x  accept=OK | disable=P0001:DRIVER_HAS_ACTIVE_RIDE | final eligible=True ride=assigned
+  anomalies observées : 147/150
+
+### disable=disable_guard | contrôle acceptation=share | isolation=serializable | 150 itérations | décalage aléatoire 0..4 ms
+   150 x  accept=OK | disable=40001:could not serialize acce | final eligible=True ride=assigned
+  anomalies observées : 0/150
+violations (vue générique): []

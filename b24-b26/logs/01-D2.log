@@ -1,0 +1,51 @@
+# 01-D2 — exécuté 2026-10-03T14:10:01.097888 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+
+## 01-D2-a : stratégie 3 transactions, client tué (SIGKILL) entre tx métier et dedup_finish
+  child> BEGIN: NEW
+  child> BUSINESS: ACCEPTED
+  child> READY_TO_FINISH
+  child tué, code retour = -9
+request_dedup après crash: [["D2a", "pending", null]]
+état course après crash (avant retry): {"ride": {"id": 4000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D2a"}], "side_effects": [{"request_id": "D2a", "kind": "notify_rider"}]}
+retry -> dedup_begin: {"result": "EXISTS:pending", "sqlstate": null, "error": null}
+Politique P1 : 'pending' = opération en cours -> le retry s'arrête là (rien d'autre n'est fait).
+Politique P2 : 'pending' = ré-exécuter le métier :
+retry P2 -> accept_v_lock: {"result": null, "sqlstate": "P0001", "error": "RIDE_NOT_DISPATCHING:assigned"}
+état final: {"ride": {"id": 4000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D2a"}], "side_effects": [{"request_id": "D2a", "kind": "notify_rider"}]}
+request_dedup final: [["D2a", "pending", null]]
+violations: []
+
+## 01-D2-b : stratégie 3 transactions, CRASH SERVEUR (pg stop -m immediate) entre tx métier et dedup_finish
+tx1 dedup_begin: "NEW"
+tx2 accept_v_lock: "ACCEPTED"
+  serveur arrêté en mode immediate (pas de checkpoint, recovery WAL au redémarrage)
+  dedup_finish échoue côté client : OperationalError: consuming input failed: SSL error: unexpected eof while reading
+  serveur redémarré en 2.6s
+request_dedup après crash: [["D2b", "pending", null]]
+état course après crash (avant retry): {"ride": {"id": 4100, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D2b"}], "side_effects": [{"request_id": "D2b", "kind": "notify_rider"}]}
+retry -> dedup_begin: {"result": "EXISTS:pending", "sqlstate": null, "error": null}
+Politique P1 : 'pending' = opération en cours -> le retry s'arrête là (rien d'autre n'est fait).
+Politique P2 : 'pending' = ré-exécuter le métier :
+retry P2 -> accept_v_lock: {"result": null, "sqlstate": "P0001", "error": "RIDE_NOT_DISPATCHING:assigned"}
+état final: {"ride": {"id": 4100, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D2b"}], "side_effects": [{"request_id": "D2b", "kind": "notify_rider"}]}
+request_dedup final: [["D2b", "pending", null]]
+violations: []
+
+## 01-D2-c : stratégie atomique (dedup dans la tx métier), backend tué par SIGKILL AVANT le COMMIT
+métier exécuté dans la tx (non validée): "ACCEPTED"
+  backend 14722 tué (SIGKILL) -> le postmaster réinitialise toutes les sessions (crash recovery)
+  COMMIT côté client : OperationalError: consuming input failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+état après crash: {"ride": {"id": 4200, "status": "dispatching", "version": 0, "dispatch_generation": 1, "driver_id": null}, "offers_by_status": {"pending": 2}, "accepted": [], "transitions": [], "side_effects": []}
+request_dedup après crash: []
+retry même request_id: {"result": "ACCEPTED", "sqlstate": null, "error": null}
+2e retry même request_id: {"result": "REPLAY:done:ACCEPTED", "sqlstate": null, "error": null}
+état final: {"ride": {"id": 4200, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D2c"}], "side_effects": [{"request_id": "D2c", "kind": "notify_rider"}]}
+violations: []
+
+## 01-D2-d : stratégie atomique, COMMIT validé puis CRASH SERVEUR immédiat (réponse supposée perdue)
+  métier=ACCEPTED, COMMIT renvoyé, puis serveur arrêté en mode immediate
+retry même request_id après recovery: {"result": "REPLAY:done:ACCEPTED", "sqlstate": null, "error": null}
+état final: {"ride": {"id": 4300, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D2d"}], "side_effects": [{"request_id": "D2d", "kind": "notify_rider"}]}
+violations: []

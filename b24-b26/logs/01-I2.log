@@ -1,0 +1,61 @@
+# 01-I2 — exécuté 2026-10-03T14:17:08.850189 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+## 01-I2-A : chemin normal (ordre course -> offres -> chauffeur), sans retry, sans sweeper
+
+### A1 chemin normal sans sweeper
+  paramètres : 20 courses, 6 chauffeurs, 20s, sweeper=False, ordre redispatch=ride_first, horloge acceptation=clock, retry=False
+    1940 x P0001 RIDE_NOT_DISPATCHING:assigned
+      93 x DISABLED
+      61 x P0001 OFFER_NOT_PENDING:superseded
+      35 x REDISPATCHED
+      20 x ACCEPTED
+       9 x P0001 OFFER_EXPIRED
+  violations vue invariant_violations (nb): 0
+  contrôles 01-H complémentaires: {"lost_offer_on_non_assigned_ride": 0, "accepted_after_expiry": 0, "pending_offer_of_old_generation": 0, "dispatching_ride_with_accepted_offer": 0, "offers_by_status": {"superseded": 102, "lost": 68, "accepted": 20}, "rides_by_status": {"assigned": 20}}
+
+## 01-I2-A2 : chemin normal + sweeper d'expiration (met à jour des offres sans verrouiller la course)
+
+### A2 chemin normal + sweeper, sans retry
+  paramètres : 20 courses, 6 chauffeurs, 20s, sweeper=True, ordre redispatch=ride_first, horloge acceptation=clock, retry=False
+    1837 x P0001 RIDE_NOT_DISPATCHING:assigned
+     365 x None
+      89 x DISABLED
+      46 x REDISPATCHED
+      40 x P0001 OFFER_NOT_PENDING:expired
+      27 x P0001 OFFER_NOT_PENDING:superseded
+      20 x ACCEPTED
+       3 x P0001 DRIVER_NOT_ELIGIBLE
+       2 x P0001 OFFER_EXPIRED
+       2 x SWEPT
+  violations vue invariant_violations (nb): 0
+  contrôles 01-H complémentaires: {"lost_offer_on_non_assigned_ride": 0, "accepted_after_expiry": 0, "pending_offer_of_old_generation": 0, "dispatching_ride_with_accepted_offer": 0, "offers_by_status": {"superseded": 110, "lost": 52, "accepted": 20, "expired": 30}, "rides_by_status": {"assigned": 20}}
+
+## 01-I2-B1 : deux transactions prennent course et chauffeur dans des ordres opposés
+  : {"app": "T1", "sqlstate": "40P01", "error": "deadlock detected", "detail": "Process 14043 waits for ShareLock on transaction 37393; blocked by process 14044.\nProcess 14044 waits for ShareLock on transaction 37392; blocked by process 14043.", "ms": 1105}
+  : {"app": "T2", "result": "COMMIT", "ms": 1105}
+  version finale course (1 seule des 2 incrémentations attendue): [1]
+  pg_stat_database.deadlocks: [1]
+
+## 01-I2-B2 : accept_v_lock (course -> offres) vs redispatch 'offers_first' (offres -> course), 100 itérations
+    84 x accept=40P01 deadlock detected | redispatch=REDISPATCHED
+    16 x accept=ACCEPTED | redispatch=P0001 RIDE_NOT_DISPATCHING:assigned
+  violations: []
+  pg_stat_database.deadlocks (cumul): [85]
+
+## 01-I2-B3 : récupération — même charge conflictuelle (redispatch offers_first + sweeper) AVEC retry 40P01/40001 (5 tentatives, backoff exponentiel)
+
+### B3 conflictuel + retry
+  paramètres : 20 courses, 6 chauffeurs, 20s, sweeper=True, ordre redispatch=offers_first, horloge acceptation=clock, retry=True
+    1502 x P0001 RIDE_NOT_DISPATCHING:assigned
+     327 x None
+     110 x DISABLED
+      20 x ACCEPTED
+      18 x P0001 OFFER_NOT_PENDING:expired
+      12 x REDISPATCHED
+      10 x P0001 OFFER_EXPIRED
+       8 x P0001 OFFER_NOT_PENDING:superseded
+       7 x 40P01 deadlock detected
+       1 x P0001 DRIVER_NOT_ELIGIBLE
+       1 x SWEPT
+  retries: {"n": 7, "gave_up": 0}
+  violations vue invariant_violations (nb): 0
+  contrôles 01-H complémentaires: {"lost_offer_on_non_assigned_ride": 0, "accepted_after_expiry": 0, "pending_offer_of_old_generation": 0, "dispatching_ride_with_accepted_offer": 0, "offers_by_status": {"superseded": 24, "lost": 88, "accepted": 20, "expired": 12}, "rides_by_status": {"assigned": 20}}

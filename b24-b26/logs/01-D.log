@@ -1,0 +1,22 @@
+# 01-D — exécuté 2026-10-03T14:09:19.286940 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+
+## 01-D1 : même request_id envoyé 10 fois en parallèle, accept_dedup_atomic, 50 itérations
+réponses agrégées: {"REPLAY:done:ACCEPTED": 450, "ACCEPTED": 50}
+répartition {compteurs par course: nb courses}: {"{\"transitions\": 1, \"side_effects\": 1, \"accepted_offers\": 1}": 50}
+durée max d'un appel (ms): 26.0
+request_dedup par statut: [["done", {"r": "ACCEPTED"}, 50]]
+violations: []
+
+## 01-D2-seq : rejeu séquentiel du même request_id après commit (5 fois)
+réponses successives: ["ACCEPTED", "REPLAY:done:ACCEPTED", "REPLAY:done:ACCEPTED", "REPLAY:done:ACCEPTED", "REPLAY:done:ACCEPTED"]
+état final: {"ride": {"id": 3500, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D-seq"}], "side_effects": [{"request_id": "D-seq", "kind": "notify_rider"}]}
+
+## 01-D3 : INSERT request_dedup SANS ON CONFLICT, 2 transactions, la 1re garde la transaction ouverte 1 s
+résultats: [{"app": "first", "result": "INSERTED", "sqlstate": null, "elapsed_ms": 1003.9}, {"app": "second", "result": null, "sqlstate": "23505", "error": "duplicate key value violates unique constraint \"request_dedup_pkey\"", "elapsed_ms": 792.2}]
+
+## 01-D4 : 1re tentative refusée par le métier (offre expirée) puis rejeu du même request_id
+tentative 1: {"result": null, "sqlstate": "P0001", "error": "OFFER_EXPIRED"}
+(entre les deux : l'offre est remise non expirée, pour voir si le rejeu ré-exécute le métier)
+tentative 2: {"result": "ACCEPTED", "sqlstate": null, "error": null}
+request_dedup: [["D4", "done", {"r": "ACCEPTED"}]]
+état final: {"ride": {"id": 3600, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "D4"}], "side_effects": [{"request_id": "D4", "kind": "notify_rider"}]}

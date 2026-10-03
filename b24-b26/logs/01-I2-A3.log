@@ -1,0 +1,6 @@
+# 01-I2-A3 — exécuté 2026-10-03T14:23:39.536679 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+   251 x accept=ACCEPTED | sweeper=SWEPT
+    49 x accept=ACCEPTED | sweeper=0 ligne
+violations: []
+accepted_after_expiry: [0]
+pg_stat_database.deadlocks (cumul base): [92]

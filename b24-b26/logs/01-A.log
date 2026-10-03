@@ -1,0 +1,33 @@
+# 01-A — exécuté 2026-10-03T14:07:02.425358 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+
+## 01-A : 2 chauffeurs x 200 itérations par variante
+
+### v_lock/RC (isolation=read committed)
+réponses agrégées: {"P0001 RIDE_NOT_DISPATCHING:assigned": 200, "ACCEPTED": 200}
+histogramme {nb_gagnants_par_course: nb_courses}: {"1": 200}
+violations invariants (ride_id, type) [20 premières]: []
+nb violations: 0
+exemple état final course: {"ride": {"id": 1000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 2}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 2, "driver_id": 2, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 2, "request_id": "req-1000-2"}], "side_effects": [{"request_id": "req-1000-2", "kind": "notify_rider"}]}
+
+### v_cond/RC (isolation=read committed)
+réponses agrégées: {"ACCEPTED": 200, "P0001 CAS_LOST": 200}
+histogramme {nb_gagnants_par_course: nb_courses}: {"1": 200}
+violations invariants (ride_id, type) [20 premières]: []
+nb violations: 0
+exemple état final course: {"ride": {"id": 1000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "req-1000-1"}], "side_effects": [{"request_id": "req-1000-1", "kind": "notify_rider"}]}
+
+### v_naive/RC (témoin) (isolation=read committed)
+réponses agrégées: {"ACCEPTED": 400}
+histogramme {nb_gagnants_par_course: nb_courses}: {"2": 200}
+violations invariants (ride_id, type) [20 premières]: [[1000, "more_than_one_assign_transition"], [1000, "assigned_without_exactly_one_accepted_offer"], [1000, "accepted_offer_driver_differs_from_ride_driver"], [1001, "assigned_without_exactly_one_accepted_offer"], [1001, "more_than_one_assign_transition"], [1001, "accepted_offer_driver_differs_from_ride_driver"], [1002, "more_than_one_assign_transition"], [1002, "assigned_without_exactly_one_accepted_offer"], [1002, "accepted_offer_driver_differs_from_ride_driver"], [1003, "more_than_one_assign_transition"], [1003, "accepted_offer_driver_differs_from_ride_driver"], [1003, "assigned_without_exactly_one_accepted_offer"], [1004, "more_than_one_assign_transition"], [1004, "accepted_offer_driver_differs_from_ride_driver"], [1004, "assigned_without_exactly_one_accepted_offer"], [1005, "assigned_without_exactly_one_accepted_offer"], [1005, "more_than_one_assign_transition"], [1005, "accepted_offer_driver_differs_from_ride_driver"], [1006, "more_than_one_assign_transition"], [1006, "assigned_without_exactly_one_accepted_offer"]]
+nb violations: 600
+exemple état final course: {"ride": {"id": 1000, "status": "assigned", "version": 2, "dispatch_generation": 1, "driver_id": 2}, "offers_by_status": {"accepted": 2}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}, {"id": 2, "driver_id": 2, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "req-1000-1"}, {"from_status": "dispatching", "to_status": "assigned", "driver_id": 2, "request_id": "req-1000-2"}], "side_effects": [{"request_id": "req-1000-1", "kind": "notify_rider"}, {"request_id": "req-1000-2", "kind": "notify_rider"}]}
+état course en violation: {"ride": {"id": 1000, "status": "assigned", "version": 2, "dispatch_generation": 1, "driver_id": 2}, "offers_by_status": {"accepted": 2}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}, {"id": 2, "driver_id": 2, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "req-1000-1"}, {"from_status": "dispatching", "to_status": "assigned", "driver_id": 2, "request_id": "req-1000-2"}], "side_effects": [{"request_id": "req-1000-1", "kind": "notify_rider"}, {"request_id": "req-1000-2", "kind": "notify_rider"}]}
+
+### v_naive/SERIALIZABLE (isolation=serializable)
+réponses agrégées: {"ACCEPTED": 200, "40001 could not serialize access due to concur": 200}
+histogramme {nb_gagnants_par_course: nb_courses}: {"1": 200}
+violations invariants (ride_id, type) [20 premières]: [[1000, "pending_offer_on_assigned_ride"], [1001, "pending_offer_on_assigned_ride"], [1002, "pending_offer_on_assigned_ride"], [1003, "pending_offer_on_assigned_ride"], [1004, "pending_offer_on_assigned_ride"], [1005, "pending_offer_on_assigned_ride"], [1006, "pending_offer_on_assigned_ride"], [1007, "pending_offer_on_assigned_ride"], [1008, "pending_offer_on_assigned_ride"], [1009, "pending_offer_on_assigned_ride"], [1010, "pending_offer_on_assigned_ride"], [1011, "pending_offer_on_assigned_ride"], [1012, "pending_offer_on_assigned_ride"], [1013, "pending_offer_on_assigned_ride"], [1014, "pending_offer_on_assigned_ride"], [1015, "pending_offer_on_assigned_ride"], [1016, "pending_offer_on_assigned_ride"], [1017, "pending_offer_on_assigned_ride"], [1018, "pending_offer_on_assigned_ride"], [1019, "pending_offer_on_assigned_ride"]]
+nb violations: 200
+exemple état final course: {"ride": {"id": 1000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "pending": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "req-1000-1"}], "side_effects": [{"request_id": "req-1000-1", "kind": "notify_rider"}]}
+état course en violation: {"ride": {"id": 1000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "pending": 1}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "req-1000-1"}], "side_effects": [{"request_id": "req-1000-1", "kind": "notify_rider"}]}

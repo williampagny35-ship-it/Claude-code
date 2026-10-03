@@ -1,0 +1,81 @@
+# Extraits du journal serveur PostgreSQL 16 (log_lock_waits=on, deadlock_timeout=1s)
+41404:2026-10-03 14:17:51.404 UTC [14043] tester@b2426 ERROR:  deadlock detected
+41405-2026-10-03 14:17:51.404 UTC [14043] tester@b2426 DETAIL:  Process 14043 waits for ShareLock on transaction 37393; blocked by process 14044.
+41406-	Process 14044 waits for ShareLock on transaction 37392; blocked by process 14043.
+41407-	Process 14043: update drivers set eligible=eligible where id=1
+41408-	Process 14044: update rides set version=version+1 where id=9500
+41409-2026-10-03 14:17:51.404 UTC [14043] tester@b2426 HINT:  See server log for query details.
+41410-2026-10-03 14:17:51.404 UTC [14043] tester@b2426 CONTEXT:  while updating tuple (0,1) in relation "drivers"
+--
+41425:2026-10-03 14:17:52.504 UTC [14051] tester@b2426 ERROR:  deadlock detected
+41426-2026-10-03 14:17:52.504 UTC [14051] tester@b2426 DETAIL:  Process 14051 waits for ShareLock on transaction 37403; blocked by process 14052.
+41427-	Process 14052 waits for ShareLock on transaction 37402; blocked by process 14051.
+41428-	Process 14051: select accept_v_lock($1,1,$2,'clock','share')
+41429-	Process 14052: select redispatch($1, array[3,4], 'offers_first')
+41430-2026-10-03 14:17:52.504 UTC [14051] tester@b2426 HINT:  See server log for query details.
+41431-2026-10-03 14:17:52.504 UTC [14051] tester@b2426 CONTEXT:  while locking tuple (0,1) in relation "offers"
+--
+41441:2026-10-03 14:17:53.546 UTC [14056] tester@b2426 ERROR:  deadlock detected
+41442-2026-10-03 14:17:53.546 UTC [14056] tester@b2426 DETAIL:  Process 14056 waits for ShareLock on transaction 37408; blocked by process 14057.
+41443-	Process 14057 waits for ShareLock on transaction 37407; blocked by process 14056.
+41444-	Process 14056: select accept_v_lock($1,1,$2,'clock','share')
+41445-	Process 14057: select redispatch($1, array[3,4], 'offers_first')
+41446-2026-10-03 14:17:53.546 UTC [14056] tester@b2426 HINT:  See server log for query details.
+41447-2026-10-03 14:17:53.546 UTC [14056] tester@b2426 CONTEXT:  while locking tuple (0,7) in relation "offers"
+--
+41457:2026-10-03 14:17:54.585 UTC [14061] tester@b2426 ERROR:  deadlock detected
+41458-2026-10-03 14:17:54.585 UTC [14061] tester@b2426 DETAIL:  Process 14061 waits for ShareLock on transaction 37413; blocked by process 14062.
+41459-	Process 14062 waits for ShareLock on transaction 37412; blocked by process 14061.
+41460-	Process 14061: select accept_v_lock($1,1,$2,'clock','share')
+41461-	Process 14062: select redispatch($1, array[3,4], 'offers_first')
+41462-2026-10-03 14:17:54.585 UTC [14061] tester@b2426 HINT:  See server log for query details.
+41463-2026-10-03 14:17:54.585 UTC [14061] tester@b2426 CONTEXT:  while locking tuple (0,13) in relation "offers"
+--
+41473:2026-10-03 14:17:55.625 UTC [14066] tester@b2426 ERROR:  deadlock detected
+41474-2026-10-03 14:17:55.625 UTC [14066] tester@b2426 DETAIL:  Process 14066 waits for ShareLock on transaction 37417; blocked by process 14067.
+41475-	Process 14067 waits for ShareLock on transaction 37418; blocked by process 14066.
+41476-	Process 14066: select accept_v_lock($1,1,$2,'clock','share')
+41477-	Process 14067: select redispatch($1, array[3,4], 'offers_first')
+41478-2026-10-03 14:17:55.625 UTC [14066] tester@b2426 HINT:  See server log for query details.
+41479-2026-10-03 14:17:55.625 UTC [14066] tester@b2426 CONTEXT:  while locking tuple (0,19) in relation "offers"
+--
+41489:2026-10-03 14:17:56.661 UTC [14074] tester@b2426 ERROR:  deadlock detected
+41490-2026-10-03 14:17:56.661 UTC [14074] tester@b2426 DETAIL:  Process 14074 waits for ShareLock on transaction 37422; blocked by process 14075.
+41491-	Process 14075 waits for ShareLock on transaction 37423; blocked by process 14074.
+41492-	Process 14074: select accept_v_lock($1,1,$2,'clock','share')
+41493-	Process 14075: select redispatch($1, array[3,4], 'offers_first')
+41494-2026-10-03 14:17:56.661 UTC [14074] tester@b2426 HINT:  See server log for query details.
+41495-2026-10-03 14:17:56.661 UTC [14074] tester@b2426 CONTEXT:  while locking tuple (0,25) in relation "offers"
+--
+41508:2026-10-03 14:17:57.799 UTC [14084] tester@b2426 ERROR:  deadlock detected
+41509-2026-10-03 14:17:57.799 UTC [14084] tester@b2426 DETAIL:  Process 14084 waits for ShareLock on transaction 37432; blocked by process 14085.
+41510-	Process 14085 waits for ShareLock on transaction 37433; blocked by process 14084.
+41511-	Process 14084: select accept_v_lock($1,1,$2,'clock','share')
+41512-	Process 14085: select redispatch($1, array[3,4], 'offers_first')
+41513-2026-10-03 14:17:57.799 UTC [14084] tester@b2426 HINT:  See server log for query details.
+41514-2026-10-03 14:17:57.799 UTC [14084] tester@b2426 CONTEXT:  while locking tuple (0,35) in relation "offers"
+--
+41524:2026-10-03 14:17:58.836 UTC [14090] tester@b2426 ERROR:  deadlock detected
+41525-2026-10-03 14:17:58.836 UTC [14090] tester@b2426 DETAIL:  Process 14090 waits for ShareLock on transaction 37437; blocked by process 14091.
+41526-	Process 14091 waits for ShareLock on transaction 37438; blocked by process 14090.
+41527-	Process 14090: select accept_v_lock($1,1,$2,'clock','share')
+
+# Crash / recovery (01-D2)
+5:2026-10-03 14:04:38.386 UTC [588] LOG:  database system is ready to accept connections
+17:2026-10-03 14:06:18.704 UTC [687] LOG:  database system is ready to accept connections
+12229:2026-10-03 14:10:02.052 UTC [687] LOG:  received immediate shutdown request
+12234:2026-10-03 14:10:02.239 UTC [14698] LOG:  database system was interrupted; last known up at 2026-10-03 14:06:18 UTC
+12236:2026-10-03 14:10:02.338 UTC [14698] LOG:  redo starts at 0/1956CA0
+12238:2026-10-03 14:10:02.398 UTC [14698] LOG:  redo done at 0/1F31230 system usage: CPU: user: 0.04 s, system: 0.01 s, elapsed: 0.06 s
+12241:2026-10-03 14:10:02.504 UTC [14695] LOG:  database system is ready to accept connections
+12245:2026-10-03 14:10:04.730 UTC [14695] LOG:  server process (PID 14722) was terminated by signal 9: Killed
+12249:2026-10-03 14:10:04.737 UTC [14695] LOG:  all server processes terminated; reinitializing
+12250:2026-10-03 14:10:04.747 UTC [14724] LOG:  database system was interrupted; last known up at 2026-10-03 14:10:02 UTC
+12252:2026-10-03 14:10:04.815 UTC [14724] LOG:  redo starts at 0/1F312D0
+12254:2026-10-03 14:10:04.816 UTC [14724] LOG:  redo done at 0/1F406F8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+12257:2026-10-03 14:10:04.830 UTC [14695] LOG:  database system is ready to accept connections
+12258:2026-10-03 14:10:05.441 UTC [14695] LOG:  received immediate shutdown request
+12263:2026-10-03 14:10:05.629 UTC [14751] LOG:  database system was interrupted; last known up at 2026-10-03 14:10:04 UTC
+12265:2026-10-03 14:10:05.695 UTC [14751] LOG:  redo starts at 0/1F40798
+12267:2026-10-03 14:10:05.697 UTC [14751] LOG:  redo done at 0/1F50460 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+12270:2026-10-03 14:10:05.711 UTC [14748] LOG:  database system is ready to accept connections

@@ -1,0 +1,18 @@
+# 01-E — exécuté 2026-10-03T14:11:53.081821 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+
+## 01-E [v_lock] : acceptation (chauffeur 1) vs redispatch (-> chauffeurs 3,4), départ simultané, 200 itérations, READ COMMITTED
+   123 x  accept=P0001:OFFER_NOT_PENDING:superseded | redispatch=REDISPATCHED | ride=dispatching gen=2 offres={'pending': 2, 'superseded': 2}
+    77 x  accept=ACCEPTED | redispatch=P0001:RIDE_NOT_DISPATCHING:assigned | ride=assigned gen=1 offres={'accepted': 1, 'lost': 1}
+violations: []
+
+## 01-E [v_cond] : acceptation (chauffeur 1) vs redispatch (-> chauffeurs 3,4), départ simultané, 200 itérations, READ COMMITTED
+   120 x  accept=P0001:CAS_LOST | redispatch=REDISPATCHED | ride=dispatching gen=2 offres={'pending': 2, 'superseded': 2}
+    72 x  accept=ACCEPTED | redispatch=P0001:RIDE_NOT_DISPATCHING:assigned | ride=assigned gen=1 offres={'accepted': 1, 'lost': 1}
+     8 x  accept=P0001:PRECHECK_FAILED | redispatch=REDISPATCHED | ride=dispatching gen=2 offres={'pending': 2, 'superseded': 2}
+violations: []
+
+## 01-E-forcé : redispatch prend le verrou course et le garde 1 s ; l'acceptation arrive pendant ce temps
+redispatch: {"result": "REDISPATCHED", "sqlstate": null, "error": null, "elapsed_ms": 1005.5}
+accept: {"result": null, "sqlstate": "P0001", "error": "OFFER_NOT_PENDING:superseded", "elapsed_ms": 794.9}
+état final: {"ride": {"id": 6900, "status": "dispatching", "version": 1, "dispatch_generation": 2, "driver_id": null}, "offers_by_status": {"pending": 2, "superseded": 2}, "accepted": [], "transitions": [], "side_effects": []}
+violations: []

@@ -1,0 +1,8 @@
+# 01-C — exécuté 2026-10-03T14:09:14.007613 sur PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+
+## 01-C : même chauffeur / même offre, 2 request_id différents, concurrent, accept_dedup_atomic, 100 itérations
+réponses agrégées: {"ACCEPTED": 100, "P0001 RIDE_NOT_DISPATCHING:assigned": 100}
+répartition {compteurs par course: nb courses}: {"{\"transitions\": 1, \"side_effects\": 1, \"accepted_offers\": 1}": 100}
+request_dedup par statut: [["done", 100]]
+violations: []
+exemple état final: {"ride": {"id": 2000, "status": "assigned", "version": 1, "dispatch_generation": 1, "driver_id": 1}, "offers_by_status": {"accepted": 1, "lost": 2}, "accepted": [{"id": 1, "driver_id": 1, "dispatch_generation": 1}], "transitions": [{"from_status": "dispatching", "to_status": "assigned", "driver_id": 1, "request_id": "C-2000-a"}], "side_effects": [{"request_id": "C-2000-a", "kind": "notify_rider"}]}
